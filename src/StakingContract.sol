@@ -24,7 +24,7 @@ contract Stake is Ownable {
         require(msg.value == _amount, "Please send appropriate amount");
         uint256 lastTimestamp = updated[msg.sender];
         rewards[msg.sender] +=
-            ((block.timestamp - lastTimestamp) / 1 minutes) *
+            ((block.timestamp - lastTimestamp) / 1 days) *
             stakes[msg.sender] *
             20;
         updated[msg.sender] = block.timestamp;
@@ -35,7 +35,7 @@ contract Stake is Ownable {
         require(stakes[msg.sender] >= _amount, "Not enough stakes");
         uint256 lastTimestamp = updated[msg.sender];
         rewards[msg.sender] +=
-            ((block.timestamp - lastTimestamp) / 1 minutes) *
+            ((block.timestamp - lastTimestamp) / 1 days) *
             stakes[msg.sender] *
             20;
         payable(msg.sender).transfer(_amount);
@@ -46,7 +46,7 @@ contract Stake is Ownable {
     function claimRewards() public {
         uint256 lastTimestamp = updated[msg.sender];
         rewards[msg.sender] +=
-            ((block.timestamp - lastTimestamp) / 1 minutes) *
+            ((block.timestamp - lastTimestamp) / 1 days) *
             stakes[msg.sender] *
             20;
         require(rewards[msg.sender]>0);
