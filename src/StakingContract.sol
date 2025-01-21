@@ -23,8 +23,9 @@ contract Stake is Ownable {
         require(_amount > 0, "Amount needs to be greater than 0");
         require(msg.value == _amount, "Please send appropriate amount");
         uint256 lastTimestamp = updated[msg.sender];
+        if(lastTimestamp ==0) lastTimestamp = block.timestamp;
         rewards[msg.sender] +=
-            ((block.timestamp - lastTimestamp) / 1 days) *
+            ((block.timestamp - lastTimestamp) / 1 minutes) *
             stakes[msg.sender] *
             20;
         updated[msg.sender] = block.timestamp;
@@ -35,18 +36,22 @@ contract Stake is Ownable {
         require(stakes[msg.sender] >= _amount, "Not enough stakes");
         uint256 lastTimestamp = updated[msg.sender];
         rewards[msg.sender] +=
-            ((block.timestamp - lastTimestamp) / 1 days) *
+            ((block.timestamp - lastTimestamp) / 1 minutes) *
             stakes[msg.sender] *
             20;
         payable(msg.sender).transfer(_amount);
         stakes[msg.sender] -= _amount;
         updated[msg.sender] =block.timestamp;
     }
-
+    function getRewards() public view returns (uint256){
+        require(stakes[msg.sender] >= 0, "No stakes");
+        uint256 lastTimestamp = updated[msg.sender];
+        return rewards[msg.sender] + ((block.timestamp - lastTimestamp) / 1 minutes) * stakes[msg.sender] *20;
+    }
     function claimRewards() public {
         uint256 lastTimestamp = updated[msg.sender];
         rewards[msg.sender] +=
-            ((block.timestamp - lastTimestamp) / 1 days) *
+            ((block.timestamp - lastTimestamp) / 1 minutes) *
             stakes[msg.sender] *
             20;
         require(rewards[msg.sender]>0);
